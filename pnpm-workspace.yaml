@@ -1,0 +1,18 @@
+# This file defines the structure of your monorepo.
+# See https://pnpm.io/workspaces
+
+packages:
+  - "@/*"
+  - "." # The root package itself
+
+# Prevent newly published packages from being used immediately.
+# Malicious packages can be detected and unpublished within hours,
+# but without this setting your project could use malware before detection.
+minimumReleaseAge: 3d
+
+# Trust policy for package verification.
+# Without trustPolicy, pnpm silently accepts packages whose trust signals
+# (provenance, signatures) weaken between updates. This can be exploited
+# by attackers who remove their own signatures after publishing.
+trustPolicy:
+  checkPermissions: true
