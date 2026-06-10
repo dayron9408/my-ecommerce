@@ -89,26 +89,6 @@ pnpm preview  # preview production build
 
 > **Note**: Cart persistence across browsers requires backend changes to associate cart with user account in database.
 
-## Key Fixes Applied
-
-### Auth Initialization Race Condition (Jun 2026)
-
-**Problem**: On page refresh, protected routes (`/orders`, `/auth/profile`) redirected to login despite valid tokens. Header showed no user menu.
-
-**Root cause**: Route guards (`beforeLoad`) ran synchronously before `useAuthInitializer()` (React Query) could fetch profile.
-
-**Solution**: 
-- Added `useAuthStore.getState().initialize()` to all `beforeLoad` guards + root route
-- `initialize()` synchronously restores tokens from localStorage
-- Cart query now waits for `!isLoading` before fetching
-- Header shows skeleton while `isLoading`, then user menu when `isAuthenticated`
-
-### Cart Merge on Login
-
-**Problem**: Anonymous cart items lost after login.
-
-**Solution**: `useLogin` invalidates cart query on success → refetches with authenticated session.
-
 ## Environment Variables
 
 Create `.env` for local overrides:
