@@ -16,11 +16,12 @@ export function Header() {
   const isLoading = useAuthStore((s) => s.isLoading);
   const wishlistCount = useWishlistStore((s) => s.items.length);
 
-  // Inicializar isDark directamente sin useEffect
+  // Modo claro por defecto cuando no hay preferencia guardada
   const stored = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const initialIsDark = stored === 'dark' || (!stored && prefersDark);
+  const initialIsDark = stored === 'dark';
   const [isDark, setIsDark] = useState(initialIsDark);
+
+
 
   const toggleTheme = () => {
     const next = !isDark;
