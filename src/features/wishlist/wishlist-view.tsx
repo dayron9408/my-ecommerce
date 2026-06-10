@@ -20,7 +20,7 @@ export function WishlistView({ onAddToCart }: WishlistViewProps) {
         <EmptyState
           icon={<Heart className="size-16 text-muted-foreground/30" strokeWidth={1} />}
           title="Tu lista de deseos está vacía"
-          description="Guardá tus productos favoritos acá para encontrarlos rápido después."
+          description="Guarda tus productos favoritos acá para encontrarlos rápido después."
           action={{ label: 'Ver productos', onClick: () => window.history.back() }}
         />
       </div>

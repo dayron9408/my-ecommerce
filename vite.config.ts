@@ -18,6 +18,9 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    headers: {
+      "Cache-Control": "public, max-age=2592000", // 30 días
+    },
     proxy: {
       "/api": {
         target: "http://localhost:8000",

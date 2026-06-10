@@ -22,7 +22,7 @@ export function ProductCardImage({ product }: { product: Product }) {
         src={product.image}
         alt={`${product.name} - ${product.sku}`}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-        loading="lazy"
+        fetchPriority="high"
       />
       <div className="absolute inset-0 bg-linear-to-t from-black/20 via-transparent to-transparent opacity-60" />
     </div>

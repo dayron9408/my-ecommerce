@@ -1,7 +1,7 @@
 import { Search, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 interface ProductSearchProps {
   onSearch: (query: string) => void;
@@ -10,14 +10,32 @@ interface ProductSearchProps {
 
 export function ProductSearch({ onSearch, defaultValue = '' }: ProductSearchProps) {
   const [value, setValue] = useState(defaultValue);
+  const timeoutRef = useRef<number | null>(null);
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      onSearch(value);
-    },
-    [value, onSearch]
-  );
+  // Debounce: buscar después de que el usuario deje de escribir (500ms)
+  useEffect(() => {
+    if (!value.trim()) {
+      onSearch('');
+      return;
+    }
+
+    // Cancelar timeout anterior si hay uno pendiente
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Nuevo timeout para buscar después de 500ms sin escribir
+    timeoutRef.current = setTimeout(() => {
+      onSearch(value.trim());
+    }, 500);
+
+    // Limpiar timeout al desmontar o si el valor cambia antes de que expire
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [value, onSearch]);
 
   const handleClear = useCallback(() => {
     setValue('');
@@ -25,7 +43,7 @@ export function ProductSearch({ onSearch, defaultValue = '' }: ProductSearchProp
   }, [onSearch]);
 
   return (
-    <form onSubmit={handleSubmit} className="relative w-full sm:w-72">
+    <form className="relative w-full sm:w-72">
       <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
       <Input
         value={value}

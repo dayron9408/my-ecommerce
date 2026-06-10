@@ -98,7 +98,7 @@ export function Header() {
             </div>
           ) : (
             <Button variant="ghost" size="sm" asChild className="gap-1.5 rounded-xl text-muted-foreground hover:text-foreground">
-              <Link to="/auth/login">
+              <Link to="/auth/login" search={{ redirect: undefined }}>
                 <LogIn className="size-4.5" />
                 <span className="hidden sm:inline">Ingresar</span>
               </Link>

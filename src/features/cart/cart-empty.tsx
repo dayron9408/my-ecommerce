@@ -10,7 +10,7 @@ export function CartEmpty() {
       <EmptyState
         icon={<ShoppingCart className="size-16 text-muted-foreground/30" strokeWidth={1} />}
         title="Tu carrito está vacío"
-        description="Agregá productos para empezar a comprar. Te esperamos con los mejores precios."
+        description="Agrega productos para empezar a comprar. Te esperamos con los mejores precios."
         action={{
           label: 'Ver productos',
           onClick: () => navigate({ to: '/products' }),
