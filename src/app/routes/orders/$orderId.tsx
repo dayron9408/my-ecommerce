@@ -22,7 +22,7 @@ export const Route = createRoute({
     useAuthStore.getState().initialize();
     const { isAuthenticated } = useAuthStore.getState();
     if (!isAuthenticated) {
-      throw redirect({ to: '/auth/login' });
+      throw redirect({ to: '/auth/login', search: { redirect: '/orders' } });
     }
   },
 });

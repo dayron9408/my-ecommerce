@@ -63,7 +63,7 @@ export function RegisterForm() {
         email: email.trim(),
         password,
       });
-      navigate({ to: '/auth/login' });
+      navigate({ to: '/auth/login', search: { redirect: '/products' } });
     } catch (err) {
       const apiErr = err as { details?: Record<string, string[]> };
       if (apiErr?.details) {
@@ -262,6 +262,7 @@ export function RegisterForm() {
               ¿Ya tenés cuenta?{' '}
               <Link
                 to="/auth/login"
+                search={{ redirect: '/products' }}
                 className="font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 Iniciar sesión
