@@ -14,7 +14,7 @@ import { authApi } from './auth';
  * - Proxy en desarrollo (ver vite.config.ts)
  */
 const apiClient = axios.create({
-  baseURL: '/api/v1',
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api/v1',
   timeout: 15_000,
   headers: {
     'Content-Type': 'application/json',

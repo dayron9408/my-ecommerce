@@ -91,11 +91,23 @@ pnpm preview  # preview production build
 
 ## Environment Variables
 
-Create `.env` for local overrides:
+Create `.env` for local development:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000/api/v1
 ```
+
+For production, create `.env.production`:
+
+```env
+# Option A: API on different domain (requires CORS in Django)
+VITE_API_BASE_URL=https://api.tudominio.com/api/v1
+
+# Option B: Same domain via reverse proxy (nginx)
+# VITE_API_BASE_URL=/api/v1
+```
+
+> **Important**: Vite only exposes variables prefixed with `VITE_` to the client. The build will use `.env.production` automatically.
 
 ## Scripts
 
