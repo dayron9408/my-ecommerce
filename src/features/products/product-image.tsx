@@ -23,7 +23,7 @@ export function ProductImage({ product }: { product: ProductDetail }) {
       <img
         src={product.image}
         alt={`${product.name} - ${product.sku}`}
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+        className="absolute inset-0 h-full w-full object-scale-down transition-transform duration-500 hover:scale-105"
         loading="lazy"
       />
       {/* Overlay de gradiente para mejorar legibilidad */}
