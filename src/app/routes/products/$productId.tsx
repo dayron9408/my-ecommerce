@@ -1,9 +1,9 @@
 import { createRoute, useParams } from '@tanstack/react-router';
 import { Route as rootRoute } from '../__root';
 import { useProduct } from '@/hooks/use-products';
-import { useAddToCart } from '@/hooks/use-cart';
+import { useCart, useAddToCart, useUpdateCartItem } from '@/hooks/use-cart';
 import { ProductDetailView } from '@/features/products/product-detail';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export const Route = createRoute({
   getParentRoute: () => rootRoute,
@@ -14,27 +14,35 @@ export const Route = createRoute({
 function ProductDetailPage() {
   const { productId } = useParams({ from: Route.id });
   const { data: product, isLoading, isError } = useProduct(productId);
+  const { data: cart } = useCart();
   const addToCart = useAddToCart();
-  const [isAdding, setIsAdding] = useState(false);
+  const updateCartItem = useUpdateCartItem();
 
-  const handleAddToCart = useCallback(
+  const cartItem = useMemo(() => cart?.items.find((item) => item.product_id === productId), [cart, productId]);
+  const cartQuantity = cartItem?.quantity ?? 0;
+  const cartItemId = cartItem?.id;
+
+  const handleSetCartQuantity = useCallback(
     (productId: string, quantity: number) => {
-      setIsAdding(true);
-      addToCart.mutate(
-        { product_id: productId, quantity },
-        { onSettled: () => setIsAdding(false) },
-      );
+      if (cartQuantity === 0 && quantity > 0) {
+        addToCart.mutate({ product_id: productId, quantity });
+      } else if (cartQuantity > 0 && cartItemId) {
+        updateCartItem.mutate({ itemId: cartItemId, payload: { quantity } });
+      }
     },
-    [addToCart]
+    [cartQuantity, cartItemId, addToCart, updateCartItem]
   );
+
+  const isUpdating = addToCart.isPending || updateCartItem.isPending;
 
   return (
     <ProductDetailView
       product={product}
       isLoading={isLoading}
       isError={isError}
-      onAddToCart={handleAddToCart}
-      isAdding={isAdding}
+      cartQuantity={cartQuantity}
+      onSetCartQuantity={handleSetCartQuantity}
+      isUpdating={isUpdating}
     />
   );
 }

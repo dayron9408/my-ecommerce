@@ -6,19 +6,24 @@ import { QuantitySelector } from '@/components/shared/quantity-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate } from '@/lib/utils';
 import type { ProductDetail } from '@/types/product';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ProductImage } from './product-image';
 
 interface ProductDetailViewProps {
   product?: ProductDetail;
   isLoading: boolean;
   isError: boolean;
-  onAddToCart: (productId: string, quantity: number) => void;
-  isAdding?: boolean;
+  cartQuantity: number;
+  onSetCartQuantity: (productId: string, quantity: number) => void;
+  isUpdating?: boolean;
 }
 
-export function ProductDetailView({ product, isLoading, isError, onAddToCart, isAdding }: ProductDetailViewProps) {
-  const [quantity, setQuantity] = useState(1);
+export function ProductDetailView({ product, isLoading, isError, cartQuantity, onSetCartQuantity, isUpdating }: ProductDetailViewProps) {
+  const [quantity, setQuantity] = useState(cartQuantity > 0 ? cartQuantity : 1);
+
+  useEffect(() => {
+    setQuantity(cartQuantity > 0 ? cartQuantity : 1);
+  }, [cartQuantity]);
 
   if (isLoading) {
     return (
@@ -80,18 +85,22 @@ export function ProductDetailView({ product, isLoading, isError, onAddToCart, is
           <div className="flex items-center gap-4 mt-2">
             <QuantitySelector
               value={quantity}
-              min={1}
+              min={cartQuantity > 0 ? 0 : 1}
               max={product.stock}
               onChange={setQuantity}
             />
             <Button
-              onClick={() => onAddToCart(product.id, quantity)}
-              disabled={isAdding}
+              onClick={() => onSetCartQuantity(product.id, quantity)}
+              disabled={isUpdating || quantity === cartQuantity}
               size="lg"
               className="flex-1 sm:flex-initial rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200"
             >
               <ShoppingCart className="size-4 mr-2" />
-              {isAdding ? 'Agregando...' : 'Agregar al carrito'}
+              {isUpdating
+                ? 'Actualizando...'
+                : cartQuantity > 0
+                ? 'Actualizar carrito'
+                : 'Agregar al carrito'}
             </Button>
           </div>
         )}

@@ -16,10 +16,26 @@ export function ProductFilters({ onApplyFilters, defaultValues }: ProductFilters
   const [inStock, setInStock] = useState(defaultValues?.inStock ?? false);
   const [open, setOpen] = useState(false);
 
+  const handleMinPriceChange = useCallback((value: string) => {
+    setMinPrice(value);
+  }, []);
+
+  const handleMaxPriceChange = useCallback((value: string) => {
+    setMaxPrice(value);
+  }, []);
+
   const handleApply = useCallback(() => {
+    let finalMin = minPrice;
+    let finalMax = maxPrice;
+
+    if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
+      finalMin = maxPrice;
+      finalMax = minPrice;
+    }
+
     onApplyFilters({
-      minPrice: minPrice || undefined,
-      maxPrice: maxPrice || undefined,
+      minPrice: finalMin || undefined,
+      maxPrice: finalMax || undefined,
       inStock: inStock || undefined,
     });
     setOpen(false);
@@ -59,7 +75,7 @@ export function ProductFilters({ onApplyFilters, defaultValues }: ProductFilters
                 type="number"
                 placeholder="Mín"
                 value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
+                onChange={(e) => handleMinPriceChange(e.target.value)}
                 min={0}
                 step="0.01"
                 aria-label="Precio mínimo"
@@ -70,7 +86,7 @@ export function ProductFilters({ onApplyFilters, defaultValues }: ProductFilters
                 type="number"
                 placeholder="Máx"
                 value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
+                onChange={(e) => handleMaxPriceChange(e.target.value)}
                 min={0}
                 step="0.01"
                 aria-label="Precio máximo"
