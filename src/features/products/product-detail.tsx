@@ -1,12 +1,10 @@
-import { ShoppingCart, AlertCircle, ShieldCheck, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AlertCircle, ShieldCheck, Truck } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { PriceDisplay } from '@/components/shared/price-display';
 import { QuantitySelector } from '@/components/shared/quantity-selector';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDate } from '@/lib/utils';
 import type { ProductDetail } from '@/types/product';
-import { useState, useEffect } from 'react';
 import { ProductImage } from './product-image';
 
 interface ProductDetailViewProps {
@@ -19,12 +17,6 @@ interface ProductDetailViewProps {
 }
 
 export function ProductDetailView({ product, isLoading, isError, cartQuantity, onSetCartQuantity, isUpdating }: ProductDetailViewProps) {
-  const [quantity, setQuantity] = useState(cartQuantity > 0 ? cartQuantity : 1);
-
-  useEffect(() => {
-    setQuantity(cartQuantity > 0 ? cartQuantity : 1);
-  }, [cartQuantity]);
-
   if (isLoading) {
     return (
       <div className="grid gap-8 md:grid-cols-2">
@@ -82,27 +74,13 @@ export function ProductDetailView({ product, isLoading, isError, cartQuantity, o
         </div>
 
         {product.is_in_stock && (
-          <div className="flex items-center gap-4 mt-2">
-            <QuantitySelector
-              value={quantity}
-              min={cartQuantity > 0 ? 0 : 1}
-              max={product.stock}
-              onChange={setQuantity}
-            />
-            <Button
-              onClick={() => onSetCartQuantity(product.id, quantity)}
-              disabled={isUpdating || quantity === cartQuantity}
-              size="lg"
-              className="flex-1 sm:flex-initial rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-200"
-            >
-              <ShoppingCart className="size-4 mr-2" />
-              {isUpdating
-                ? 'Actualizando...'
-                : cartQuantity > 0
-                ? 'Actualizar carrito'
-                : 'Agregar al carrito'}
-            </Button>
-          </div>
+          <QuantitySelector
+            value={cartQuantity}
+            min={0}
+            max={product.stock}
+            onChange={(qty) => onSetCartQuantity(product.id, qty)}
+            disabled={isUpdating}
+          />
         )}
 
         {/* Trust badges */}
